@@ -19,6 +19,8 @@
                 const carritos = await response.json();
                 const contenedorCarritos = document.getElementById('carritos');
 
+                contenedorCarritos.innerHTML = ''; // Limpia el contenido anterior
+
                 carritos.forEach(carrito => {
                     const carritoDiv = document.createElement('div');
                     carritoDiv.classList.add('card', 'my-3');
@@ -30,8 +32,9 @@
                             <h5 class="card-title">Productos:</h5>
                             <ul class="list-group list-group-flush">
                                 ${carrito.products.map(item => `
-                                    <li class="list-group-item">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         Producto: ${item.product.title} - Precio: $${item.product.price} - Cantidad: ${item.quantity}
+                                        <button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito('${carrito._id}', '${item.product._id}')">Eliminar</button>
                                     </li>
                                 `).join('')}
                             </ul>
@@ -41,6 +44,26 @@
                 });
             } catch (error) {
                 console.error('Error al cargar los carritos:', error);
+            }
+        }
+
+        async function eliminarDelCarrito(cartId, productId) {
+            try {
+                const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Producto eliminado del carrito exitosamente');
+                    cargarCarritos(); // Recarga la lista de carritos para mostrar los cambios
+                } else {
+                    alert('Error al eliminar producto del carrito');
+                    console.error(result);
+                }
+            } catch (error) {
+                console.error('Error al eliminar producto del carrito:', error);
+                alert('Error al eliminar producto del carrito');
             }
         }
 

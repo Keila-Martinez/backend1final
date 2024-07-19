@@ -15,11 +15,11 @@
     {{/each}}
 </div>
 
-{{#if hasNextPage}}
-    <a href="/products?page={{nextPage}}" class="btn btn-rosa">Siguiente</a>
-{{/if}}
 {{#if hasPrevPage}}
     <a href="/products?page={{prevPage}}" class="btn btn-rosa">Anterior</a>
+{{/if}}
+{{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}" class="btn btn-rosa">Siguiente</a>
 {{/if}}
 
 <p class="text-center">Página {{currentPage}} de {{totalPages}}</p>
@@ -41,7 +41,6 @@
                     <label for="carritoId">Seleccione un Carrito</label>
                     <select class="form-control" id="carritoId">
                         <option value="">Seleccione un carrito</option>
-                        <!-- Options will be populated here -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -58,29 +57,32 @@
 </div>
 
 <script>
-    async function agregarAlCarrito(productId) {
-        document.getElementById('productId').value = productId;
+   async function agregarAlCarrito(productId) {
+    document.getElementById('productId').value = productId;
 
-        try {
-            const response = await fetch('/api/carts/');
-            const carritos = await response.json();
-
-            const carritoDropdown = document.getElementById('carritoId');
-            carritoDropdown.innerHTML = '<option value="">Seleccione un carrito</option>'; // Reset dropdown options
-
-            carritos.forEach(carrito => {
-                const option = document.createElement('option');
-                option.value = carrito._id;
-                option.textContent = carrito._id;
-                carritoDropdown.appendChild(option);
-            });
-
-            $('#agregarCarritoModal').modal('show');
-        } catch (error) {
-            console.error('Error al obtener los carritos:', error);
-            alert('Error al obtener los carritos');
+    try {
+        const response = await fetch('/api/carts');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        const carritos = await response.json();
+
+        const carritoDropdown = document.getElementById('carritoId');
+        carritoDropdown.innerHTML = '<option value="">Seleccione un carrito</option>'; // Reset dropdown options
+
+        carritos.forEach(carrito => {
+            const option = document.createElement('option');
+            option.value = carrito._id;
+            option.textContent = carrito._id;
+            carritoDropdown.appendChild(option);
+        });
+
+        $('#agregarCarritoModal').modal('show');
+    } catch (error) {
+        console.error('Error al obtener los carritos:', error);
+        alert(`Error al obtener los carritos: ${error.message}`);
     }
+}
 
     async function confirmarAgregarAlCarrito() {
         const productId = document.getElementById('productId').value;
