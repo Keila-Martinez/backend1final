@@ -1,0 +1,23 @@
+/* Personalización de colores */
+body {
+    background-color: #f8f9fa; /* Color de fondo */
+    color: #343a40; /* Color de texto principal */
+}
+
+.navbar {
+    background-color: #6f42c1; /* Color de fondo de la barra de navegación */
+}
+
+.btn-rosa {
+    background-color: #e83e8c; /* Color de fondo botón rosa */
+    border-color: #e83e8c; /* Color de borde botón rosa */
+    color: #fff; /* Color de texto botón rosa */
+}
+
+.btn-violeta {
+    background-color: #6f42c1; /* Color de fondo botón violeta */
+    border-color: #6f42c1; /* Color de borde botón violeta */
+    color: #fff; /* Color de texto botón violeta */
+}
+
+/* Otros estilos personalizados según necesidades */

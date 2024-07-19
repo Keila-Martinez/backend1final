@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Carritos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Lista de Carritos</h1>
+        <div id="carritos"></div>
+    </div>
+
+    <script>
+        async function cargarCarritos() {
+            try {
+                const response = await fetch('/api/carts');
+                const carritos = await response.json();
+                const contenedorCarritos = document.getElementById('carritos');
+
+                carritos.forEach(carrito => {
+                    const carritoDiv = document.createElement('div');
+                    carritoDiv.classList.add('card', 'my-3');
+                    carritoDiv.innerHTML = `
+                        <div class="card-header">
+                            Carrito ID: ${carrito._id}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Productos:</h5>
+                            <ul class="list-group list-group-flush">
+                                ${carrito.products.map(item => `
+                                    <li class="list-group-item">
+                                        Producto: ${item.product.title} - Precio: $${item.product.price} - Cantidad: ${item.quantity}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    contenedorCarritos.appendChild(carritoDiv);
+                });
+            } catch (error) {
+                console.error('Error al cargar los carritos:', error);
+            }
+        }
+
+        cargarCarritos();
+    </script>
+</body>
+</html>
