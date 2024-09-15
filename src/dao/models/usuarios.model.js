@@ -1,23 +1,38 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 
-const userSchema = new mongoose.Schema({
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
-  age: { type: Number, required: true },
-  password: { type: String, required: true },
-  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
-  role: { type: String, default: 'user' },
+const usuarioSchema = new mongoose.Schema({
+    first_name: {
+        type: String,
+        required: true
+    },
+    last_name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    age: {
+        type: Number,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Carts'
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'user'],
+        default: 'user'
+    }
 });
 
-// Encriptar la contraseña antes de guardar el usuario
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+const UsuarioModel = mongoose.model('users', usuarioSchema);
 
-const User = mongoose.model('User', userSchema);
-export default User;
+export default UsuarioModel;

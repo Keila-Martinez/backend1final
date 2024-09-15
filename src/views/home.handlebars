@@ -1,6 +1,7 @@
 <h1>Pet Shop Rinita!</h1>
 
-<h2>Bienvenido, {{first_name}} !! </h2>
+<h2>Bienvenido, {{user.first_name}} !! </h2>
+ <h3>Rol: {{user.role}}</h3>
 <form action="/api/sessions/logout" method="POST">
     <button type="submit"> Logout </button>
 </form>

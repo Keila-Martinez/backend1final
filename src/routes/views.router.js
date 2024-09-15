@@ -33,8 +33,13 @@ router.get("/profile", passport.authenticate("jwt", { session: false }), (req, r
         user: req.user 
     });
 });
+//Me traigo los Middleware de auth: 
+import { soloAdmin, soloUser } from "../middleware/auth.js";
+
+
+
 // Enviamos al usuario a la vista de Productos:
-router.get("/products", async (req, res) => {
+router.get("/products",passport.authenticate("jwt", {session: false}), soloUser, async (req, res) => {
     try {
         const { page = 1, limit = 2 } = req.query;
         const productos = await productManager.getProducts({
@@ -54,7 +59,8 @@ router.get("/products", async (req, res) => {
             nextPage: productos.nextPage,
             currentPage: productos.page,
             totalPages: productos.totalPages,
-            user: req.user // Se agrega el usuario autenticado a la vista
+            user: req.user,
+            cartId: req.user.cart._id // Se agrega el usuario autenticado a la vista
         });
 
     } catch (error) {
@@ -66,10 +72,14 @@ router.get("/products", async (req, res) => {
     }
 });
 
+router.get("/realtimeproducts",passport.authenticate("jwt", {session: false}) ,soloAdmin ,(req, res) => {
+    res.render("realtimeproducts"); 
+ })
+
 // Ruta para obtener productos en tiempo real:
-router.get("/realtimeproducts", async (req, res) => {
-    res.render("realtimeproducts");
-});
+//router.get("/realtimeproducts", async (req, res) => {
+//    res.render("realtimeproducts");
+//});
 
 // Ruta para eliminar productos:
 router.get('/deleteProducts', (req, res) => {
@@ -128,8 +138,16 @@ router.get("/deleteCart", (req, res) => {
 });
 
 // Nueva ruta para listar carritos:
-router.get("/listCarts", async (req, res) => {
-    res.render("listCarts");
+router.get("/listCarts", passport.authenticate("jwt", { session: false }), (req, res) => {
+    if (!req.user) {
+        return res.redirect("/login");
+    }
+    res.render("listCarts", { 
+        cartId: req.user.cart._id
+    })
 });
+
+
+
 
 export default router;

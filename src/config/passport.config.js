@@ -72,6 +72,7 @@ const initializePassport = () => {
             return done(error);
         }
     }));
+}
 
     // Estrategia de autenticación JWT basada en cookies
     passport.use("jwt", new JWTStrategy({
@@ -79,15 +80,14 @@ const initializePassport = () => {
         secretOrKey: JWT_SECRET
     }, async (jwt_payload, done) => {
         try {
-            const user = await UserModel.findById(jwt_payload.userId);
+            // Buscar al usuario por el campo 'email' que viene en el token
+            const user = await UserModel.findOne({ email: jwt_payload.email });
             if (!user) {
-                return done(null, false); // Usuario no encontrado
+                return done(null, false);  // Usuario no encontrado
             }
-            return done(null, user);
+            return done(null, user);  // Usuario encontrado
         } catch (error) {
             return done(error);
         }
     }));
-};
-
 export default initializePassport;
